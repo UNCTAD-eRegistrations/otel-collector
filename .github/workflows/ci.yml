@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Validate docker-compose.yml syntax
+      run: |
+        # Install Docker Compose
+        docker compose version
+        # Validate the compose file
+        docker compose config > /dev/null
+        echo "✓ docker-compose.yml is valid"
+
+    - name: Validate otel-collector-config.yaml
+      run: |
+        # Check config file exists and is valid YAML
+        python3 -c "import yaml; yaml.safe_load(open('otel-collector-config.yaml'))"
+        echo "✓ otel-collector-config.yaml is valid YAML"
+
+    - name: Build and start services
+      run: |
+        # Create the network if it doesn't exist
+        docker network create deploy_default 2>/dev/null || true
+        # Pull and start services (detached)
+        docker compose pull otel-collector
+        docker compose up -d otel-collector
+        # Give collector time to start
+        sleep 10
+
+    - name: Health check
+      run: |
+        echo "Running health check on otel-collector..."
+        # Wait for health endpoint with timeout
+        for i in {1..30}; do
+          if curl -f -s http://localhost:13133/health > /dev/null 2>&1; then
+            echo "✓ Health check passed"
+            exit 0
+          fi
+          echo "Attempt $i/30 - waiting for collector..."
+          sleep 2
+        done
+        echo "✗ Health check failed - collector did not become healthy"
+        docker compose logs otel-collector
+        exit 1
+
+    - name: Cleanup
+      if: always()
+      run: |
+        docker compose down -v --remove-orphans 2>/dev/null || true
+        docker network rm deploy_default 2>/dev/null || true
