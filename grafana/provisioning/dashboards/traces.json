@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "tempo",
-        "uid": "tempo"
+        "uid": "P214B5B846CF3925F"
       },
       "fieldConfig": {
         "defaults": {
@@ -34,7 +34,7 @@
             "cellOptions": {
               "type": "auto"
             },
-            "inspect": false
+            "inspect": true
           },
           "mappings": [],
           "thresholds": {
@@ -54,7 +54,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 12,
         "w": 24,
         "x": 0,
         "y": 0
@@ -76,13 +76,12 @@
         {
           "datasource": {
             "type": "tempo",
-            "uid": "tempo"
+            "uid": "P214B5B846CF3925F"
           },
+          "filters": [],
           "limit": 20,
-          "query": "{}",
-          "queryType": "traceql",
-          "refId": "A",
-          "tableType": "traces"
+          "queryType": "traceqlSearch",
+          "refId": "A"
         }
       ],
       "title": "Recent Traces",

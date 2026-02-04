@@ -22,11 +22,7 @@ services:
         reservations:
           memory: 512M
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:13133/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      disable: true
 
   # Tempo for trace storage (dev environment)
   tempo:
@@ -47,6 +43,47 @@ services:
         reservations:
           memory: 512M
 
+  # Prometheus for metrics storage and querying
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerting-rules.yml:/etc/prometheus/alerting-rules.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - deploy_default
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+    depends_on:
+      - otel-collector
+
+  # Alertmanager for alert routing and notifications
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://alertmanager:9093'
+    ports:
+      - "9093:9093"
+    networks:
+      - deploy_default
+    restart: unless-stopped
+
   # Grafana for visualization
   grafana:
     image: grafana/grafana:10.3.1
@@ -54,7 +91,7 @@ services:
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_SERVER_ROOT_URL=https://grafana.govbridge.org
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
@@ -67,6 +104,7 @@ services:
     depends_on:
       - tempo
       - otel-collector
+      - prometheus
 
 networks:
   deploy_default:
@@ -75,3 +113,4 @@ networks:
 
 volumes:
   grafana-storage:
+  prometheus-data:

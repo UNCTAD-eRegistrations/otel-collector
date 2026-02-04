@@ -1,0 +1,221 @@
+groups:
+  - name: eregistrations-anomaly-detection
+    rules:
+      # High Error Rate Alert
+      - alert: HighErrorRate
+        expr: |
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum by (service_name) (rate(traces_spanmetrics_calls_total[5m]))
+          > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate for {{ $labels.service_name }}"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # Critical Error Rate Alert
+      - alert: CriticalErrorRate
+        expr: |
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum by (service_name) (rate(traces_spanmetrics_calls_total[5m]))
+          > 0.10
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical error rate for {{ $labels.service_name }}"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 10%)"
+
+      # High Latency Alert
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.99, sum by (le, service_name) (rate(traces_spanmetrics_latency_bucket[5m])))
+          > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency for {{ $labels.service_name }}"
+          description: "P99 latency is {{ $value | humanizeDuration }} (threshold: 5s)"
+
+      # Service Down Alert
+      - alert: ServiceDown
+        expr: |
+          sum by (service_name) (rate(traces_spanmetrics_calls_total[5m])) == 0
+          and
+          sum by (service_name) (rate(traces_spanmetrics_calls_total[1h] offset 1h)) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.service_name }} appears to be down"
+          description: "No traces received in the last 5 minutes"
+
+      # Error Rate Spike
+      - alert: ErrorRateSpike
+        expr: |
+          (
+            sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code="STATUS_CODE_ERROR"}[5m]))
+            /
+            sum by (service_name) (rate(traces_spanmetrics_calls_total[5m]))
+          )
+          >
+          2 * (
+            sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code="STATUS_CODE_ERROR"}[1h]))
+            /
+            sum by (service_name) (rate(traces_spanmetrics_calls_total[1h]))
+          )
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Error rate spike for {{ $labels.service_name }}"
+          description: "Error rate doubled compared to last hour average"
+
+      # PDF Generation Slow
+      - alert: PDFGenerationSlow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="chrome-url-to-pdf"}[5m])))
+          > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PDF generation is slow"
+          description: "P95 PDF generation time is {{ $value | humanizeDuration }} (threshold: 60s)"
+
+      # Payment Processing Issues
+      - alert: PaymentProcessingErrors
+        expr: |
+          sum(rate(traces_spanmetrics_calls_total{service_name="cashier", status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum(rate(traces_spanmetrics_calls_total{service_name="cashier"}[5m]))
+          > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Payment processing errors detected"
+          description: "Cashier error rate is {{ $value | humanizePercentage }}"
+
+  # Critical Service Alerts
+  - name: eregistrations-critical
+    rules:
+      # Database connection failures
+      - alert: DatabaseConnectionFailure
+        expr: |
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{span_name=~".*sql.*|.*db.*|.*postgres.*|.*mongo.*", status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{span_name=~".*sql.*|.*db.*|.*postgres.*|.*mongo.*"}[5m]))
+          > 0.5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection failures for {{ $labels.service_name }}"
+          description: "More than 50% of database operations are failing"
+
+      # Camunda process engine failure
+      - alert: CamundaEngineFailure
+        expr: |
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot", status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot"}[5m]))
+          > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Camunda process engine experiencing failures"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+
+  # Latency Threshold Alerts
+  - name: eregistrations-latency
+    rules:
+      # DS-Backend latency SLO breach
+      - alert: DSBackendLatencySLOBreach
+        expr: |
+          histogram_quantile(0.99, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="ds-backend"}[5m]))) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DS-Backend p99 latency exceeds 2s SLO"
+          description: "Current p99: {{ $value | humanizeDuration }}"
+
+      # Form load time alert
+      - alert: FormLoadTimeSlow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="formio-server"}[5m]))) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Form load time p95 exceeds 500ms"
+          description: "Current p95: {{ $value | humanizeDuration }}"
+
+      # Payment processing latency
+      - alert: PaymentProcessingSlow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="cashier"}[5m]))) > 30
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Payment processing p95 latency exceeds 30s"
+
+  # Error Rate Alerts
+  - name: eregistrations-errors
+    rules:
+      # BOT role failures
+      - alert: BotRoleFailures
+        expr: |
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot", span_name=~".*bot.*", status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot", span_name=~".*bot.*"}[5m]))
+          > 0.05
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "BOT role failure rate exceeds 5%"
+
+  # Trace-Based Pattern Alerts
+  - name: eregistrations-trace-patterns
+    rules:
+      # Authentication failures spike
+      - alert: AuthenticationFailuresSpike
+        expr: |
+          sum(rate(traces_spanmetrics_calls_total{service_name="keycloak", status_code="STATUS_CODE_ERROR"}[5m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High rate of authentication failures"
+          description: "{{ $value }} errors per second in Keycloak"
+
+      # External service timeout pattern
+      - alert: ExternalServiceTimeouts
+        expr: |
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{service_name="mule", status_code="STATUS_CODE_ERROR"}[5m]))
+          /
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{service_name="mule"}[5m]))
+          > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "External service integration failures exceed 10%"
+
+      # Formio submission errors
+      - alert: FormioSubmissionErrors
+        expr: |
+          sum(rate(traces_spanmetrics_calls_total{service_name="formio-server", status_code="STATUS_CODE_ERROR"}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Form submission errors in Formio"
