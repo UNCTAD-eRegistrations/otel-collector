@@ -22,10 +22,16 @@
             "type": "tempo",
             "uid": "tempo"
           },
+          "refId": "A",
           "queryType": "serviceMap"
         }
       ],
-      "gridPos": { "h": 16, "w": 24, "x": 0, "y": 0 }
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": 2,
@@ -39,10 +45,20 @@
         {
           "expr": "sum by (service_name) (rate(traces_spanmetrics_calls_total[5m]))",
           "legendFormat": "{{service_name}}",
-          "instant": true
+          "instant": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      }
     },
     {
       "id": 3,
@@ -55,7 +71,12 @@
       "targets": [
         {
           "expr": "sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum by (service_name) (rate(traces_spanmetrics_calls_total[5m])) * 100",
-          "legendFormat": "{{service_name}}"
+          "legendFormat": "{{service_name}}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -64,18 +85,36 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1 },
-              { "color": "red", "value": 5 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      }
     }
   ],
   "schemaVersion": 39,
-  "tags": ["otel", "eregistrations", "service-map"],
+  "tags": [
+    "otel",
+    "eregistrations",
+    "service-map"
+  ],
   "templating": {
     "list": []
   },

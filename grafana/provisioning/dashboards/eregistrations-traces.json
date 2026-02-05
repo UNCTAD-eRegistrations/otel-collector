@@ -25,9 +25,14 @@
     {
       "datasource": {
         "type": "tempo",
-        "uid": "P214B5B846CF3925F"
+        "uid": "tempo"
       },
-      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
       "options": {
         "content": "# eRegistrations Distributed Traces\n\nSelect a service from the dropdown and click on any trace to view the full span details. Services: **bpa-backend**, **camunda**, **ds-backend**, **gdb**",
@@ -39,94 +44,68 @@
     },
     {
       "datasource": {
-        "type": "tempo",
-        "uid": "P214B5B846CF3925F"
+        "type": "prometheus",
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": true
-          },
-          "mappings": [],
+          "unit": "reqps",
           "thresholds": {
-            "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 100 },
-              { "color": "red", "value": 500 }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Duration" },
-            "properties": [
               {
-                "id": "unit",
-                "value": "ms"
+                "color": "green",
+                "value": null
               },
               {
-                "id": "custom.cellOptions",
-                "value": { "type": "color-background" }
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1
               }
             ]
           }
-        ]
+        }
       },
-      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 3 },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
       "id": 2,
       "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Start time"
-          }
-        ]
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
       },
       "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
-            "type": "tempo",
-            "uid": "P214B5B846CF3925F"
+            "type": "prometheus",
+            "uid": "prometheus"
           },
-          "filters": [
-            {
-              "id": "service-name",
-              "operator": "=",
-              "scope": "resource",
-              "tag": "service.name",
-              "value": ["${service}"],
-              "valueType": "string"
-            }
-          ],
-          "limit": 50,
-          "queryType": "traceqlSearch",
+          "expr": "topk(20, sum by (service_name, span_name) (rate(traces_spanmetrics_calls_total[5m])))",
+          "legendFormat": "{{service_name}} - {{span_name}}",
           "refId": "A"
         }
       ],
-      "title": "Recent Traces",
-      "type": "table"
+      "title": "Top Operations (by rate)",
+      "type": "bargauge"
     },
     {
       "datasource": {
         "type": "tempo",
-        "uid": "P214B5B846CF3925F"
+        "uid": "tempo"
       },
-      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 15 },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
       "id": 3,
       "options": {
         "nodes": {
@@ -138,7 +117,7 @@
         {
           "datasource": {
             "type": "tempo",
-            "uid": "P214B5B846CF3925F"
+            "uid": "tempo"
           },
           "queryType": "serviceMap",
           "refId": "A"
@@ -149,169 +128,119 @@
     },
     {
       "datasource": {
-        "type": "tempo",
-        "uid": "P214B5B846CF3925F"
+        "type": "prometheus",
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": true
-          },
-          "mappings": [],
+          "unit": "ms",
           "thresholds": {
-            "mode": "absolute",
             "steps": [
-              { "color": "orange", "value": null },
-              { "color": "red", "value": 500 }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Duration" },
-            "properties": [
               {
-                "id": "unit",
-                "value": "ms"
+                "color": "green",
+                "value": null
               },
               {
-                "id": "custom.cellOptions",
-                "value": { "type": "color-background" }
+                "color": "yellow",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 2000
               }
             ]
           }
-        ]
+        }
       },
-      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 15 },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
       "id": 4,
       "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Duration"
-          }
-        ]
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
       },
       "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
-            "type": "tempo",
-            "uid": "P214B5B846CF3925F"
+            "type": "prometheus",
+            "uid": "prometheus"
           },
-          "filters": [
-            {
-              "id": "service-name",
-              "operator": "=",
-              "scope": "resource",
-              "tag": "service.name",
-              "value": ["${service}"],
-              "valueType": "string"
-            },
-            {
-              "id": "duration",
-              "operator": ">",
-              "scope": "span",
-              "tag": "duration",
-              "value": ["200ms"],
-              "valueType": "duration"
-            }
-          ],
-          "limit": 30,
-          "queryType": "traceqlSearch",
+          "expr": "topk(20, histogram_quantile(0.95, sum by (le, service_name, span_name) (rate(traces_spanmetrics_duration_milliseconds_bucket[5m]))) > 200)",
+          "legendFormat": "{{service_name}} - {{span_name}}",
           "refId": "A"
         }
       ],
-      "title": "Slow Traces (>200ms)",
-      "type": "table"
+      "title": "Slow Operations (p95 > 200ms)",
+      "type": "bargauge"
     },
     {
       "datasource": {
-        "type": "tempo",
-        "uid": "P214B5B846CF3925F"
+        "type": "prometheus",
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": true
-          },
-          "mappings": [],
+          "unit": "reqps",
           "thresholds": {
-            "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
             ]
           }
-        },
-        "overrides": []
+        }
       },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 27 },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
       "id": 5,
       "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": ["sum"],
-          "show": false
-        },
-        "showHeader": true
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
       },
       "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
-            "type": "tempo",
-            "uid": "P214B5B846CF3925F"
+            "type": "prometheus",
+            "uid": "prometheus"
           },
-          "filters": [
-            {
-              "id": "service-name",
-              "operator": "=",
-              "scope": "resource",
-              "tag": "service.name",
-              "value": ["${service}"],
-              "valueType": "string"
-            },
-            {
-              "id": "status",
-              "operator": "=",
-              "scope": "span",
-              "tag": "status",
-              "value": ["error"],
-              "valueType": "string"
-            }
-          ],
-          "limit": 30,
-          "queryType": "traceqlSearch",
+          "expr": "topk(20, sum by (service_name, span_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])))",
+          "legendFormat": "{{service_name}} - {{span_name}}",
           "refId": "A"
         }
       ],
-      "title": "Error Traces",
-      "type": "table"
+      "title": "Error Operations",
+      "type": "bargauge"
     }
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["otel", "traces", "eregistrations", "tempo"],
+  "tags": [
+    "otel",
+    "traces",
+    "eregistrations",
+    "tempo"
+  ],
   "templating": {
     "list": [
       {
@@ -326,10 +255,26 @@
         "multi": false,
         "name": "service",
         "options": [
-          { "selected": true, "text": "bpa-backend", "value": "bpa-backend" },
-          { "selected": false, "text": "camunda", "value": "camunda" },
-          { "selected": false, "text": "ds-backend", "value": "ds-backend" },
-          { "selected": false, "text": "gdb", "value": "gdb" }
+          {
+            "selected": true,
+            "text": "bpa-backend",
+            "value": "bpa-backend"
+          },
+          {
+            "selected": false,
+            "text": "camunda",
+            "value": "camunda"
+          },
+          {
+            "selected": false,
+            "text": "ds-backend",
+            "value": "ds-backend"
+          },
+          {
+            "selected": false,
+            "text": "gdb",
+            "value": "gdb"
+          }
         ],
         "query": "bpa-backend,camunda,ds-backend,gdb",
         "queryValue": "",
@@ -343,8 +288,27 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h"],
-    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
   },
   "timezone": "browser",
   "title": "eRegistrations Traces",

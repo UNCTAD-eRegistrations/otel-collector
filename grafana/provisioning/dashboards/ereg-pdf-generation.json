@@ -18,8 +18,13 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
-          "legendFormat": "p95"
+          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -28,14 +33,28 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 30 },
-              { "color": "red", "value": 60 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 60
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 }
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": 2,
@@ -47,8 +66,13 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
-          "legendFormat": "p99"
+          "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -57,14 +81,28 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 45 },
-              { "color": "red", "value": 90 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 45
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 }
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      }
     },
     {
       "id": 3,
@@ -77,7 +115,12 @@
       "targets": [
         {
           "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"chrome-url-to-pdf\", status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"chrome-url-to-pdf\"}[5m]))) * 100",
-          "legendFormat": "Success Rate"
+          "legendFormat": "Success Rate",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -88,14 +131,28 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 95 },
-              { "color": "green", "value": 99 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 95
+              },
+              {
+                "color": "green",
+                "value": 99
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 }
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      }
     },
     {
       "id": 4,
@@ -108,7 +165,12 @@
       "targets": [
         {
           "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"chrome-url-to-pdf\"}[5m])) * 60",
-          "legendFormat": "Jobs/min"
+          "legendFormat": "Jobs/min",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -116,7 +178,12 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 }
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      }
     },
     {
       "id": 5,
@@ -128,34 +195,62 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.5, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
-          "legendFormat": "p50"
+          "expr": "histogram_quantile(0.5, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
-          "legendFormat": "p95"
+          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
-          "legendFormat": "p99"
+          "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"chrome-url-to-pdf\"}[5m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "s",
           "custom": {
-            "thresholdsStyle": { "mode": "line" }
+            "thresholdsStyle": {
+              "mode": "line"
+            }
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 60 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 60
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      }
     },
     {
       "id": 6,
@@ -168,11 +263,21 @@
       "targets": [
         {
           "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"chrome-url-to-pdf\", status_code=\"STATUS_CODE_OK\"}[5m])) * 60",
-          "legendFormat": "Successful/min"
+          "legendFormat": "Successful/min",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
           "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"chrome-url-to-pdf\", status_code=\"STATUS_CODE_ERROR\"}[5m])) * 60",
-          "legendFormat": "Failed/min"
+          "legendFormat": "Failed/min",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -180,32 +285,72 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      }
     },
     {
       "id": 7,
-      "title": "Recent PDF Traces",
-      "type": "table",
+      "title": "PDF Generation Operations (by rate)",
+      "type": "bargauge",
       "datasource": {
-        "type": "tempo",
-        "uid": "tempo"
+        "type": "prometheus",
+        "uid": "prometheus"
       },
       "targets": [
         {
           "datasource": {
-            "type": "tempo",
-            "uid": "tempo"
+            "type": "prometheus",
+            "uid": "prometheus"
           },
-          "queryType": "traceqlSearch",
-          "query": "{ resource.service.name = \"chrome-url-to-pdf\" }",
-          "limit": 20
+          "expr": "topk(20, sum by (service_name, span_name) (rate(traces_spanmetrics_calls_total{service_name=\"chrome-url-to-pdf\"}[5m])))",
+          "legendFormat": "{{span_name}}",
+          "refId": "A"
         }
       ],
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 }
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
+      }
     }
   ],
   "schemaVersion": 39,
-  "tags": ["otel", "eregistrations", "pdf"],
+  "tags": [
+    "otel",
+    "eregistrations",
+    "pdf"
+  ],
   "templating": {
     "list": []
   },

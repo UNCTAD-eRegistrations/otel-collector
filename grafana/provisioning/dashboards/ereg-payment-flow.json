@@ -19,7 +19,12 @@
       "targets": [
         {
           "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\"}[5m]))) * 100",
-          "legendFormat": "Success Rate"
+          "legendFormat": "Success Rate",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -30,14 +35,28 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 95 },
-              { "color": "green", "value": 99 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 95
+              },
+              {
+                "color": "green",
+                "value": 99
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 0 }
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": 2,
@@ -49,8 +68,13 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"cashier\"}[5m])) by (le))",
-          "legendFormat": "p95"
+          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"cashier\"}[5m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -59,14 +83,28 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 5 },
-              { "color": "red", "value": 10 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 }
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      }
     },
     {
       "id": 3,
@@ -79,7 +117,12 @@
       "targets": [
         {
           "expr": "sum(increase(traces_spanmetrics_calls_total{service_name=\"cashier\"}[1h]))",
-          "legendFormat": "Transactions"
+          "legendFormat": "Transactions",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -87,7 +130,12 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 }
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      }
     },
     {
       "id": 4,
@@ -99,16 +147,31 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.5, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"cashier\"}[5m])) by (le))",
-          "legendFormat": "p50"
+          "expr": "histogram_quantile(0.5, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"cashier\"}[5m])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_latency_bucket{service_name=\"cashier\"}[5m])) by (le))",
-          "legendFormat": "p95"
+          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"cashier\"}[5m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
           "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\"}[5m])) by (le))",
-          "legendFormat": "p99"
+          "legendFormat": "p99",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -116,7 +179,12 @@
           "unit": "s"
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      }
     },
     {
       "id": 5,
@@ -129,11 +197,21 @@
       "targets": [
         {
           "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_OK\"}[5m])) * 60",
-          "legendFormat": "Successful/min"
+          "legendFormat": "Successful/min",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
           "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_ERROR\"}[5m])) * 60",
-          "legendFormat": "Failed/min"
+          "legendFormat": "Failed/min",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -141,32 +219,73 @@
           "unit": "short"
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      }
     },
     {
       "id": 6,
-      "title": "Recent Payment Traces",
-      "type": "table",
+      "title": "Cashier Operations (by rate)",
+      "type": "bargauge",
       "datasource": {
-        "type": "tempo",
-        "uid": "tempo"
+        "type": "prometheus",
+        "uid": "prometheus"
       },
       "targets": [
         {
           "datasource": {
-            "type": "tempo",
-            "uid": "tempo"
+            "type": "prometheus",
+            "uid": "prometheus"
           },
-          "queryType": "traceqlSearch",
-          "query": "{ resource.service.name = \"cashier\" }",
-          "limit": 20
+          "expr": "topk(20, sum by (service_name, span_name) (rate(traces_spanmetrics_calls_total{service_name=\"cashier\"}[5m])))",
+          "legendFormat": "{{span_name}}",
+          "refId": "A"
         }
       ],
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 }
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
+      }
     }
   ],
   "schemaVersion": 39,
-  "tags": ["otel", "eregistrations", "payment", "cashier"],
+  "tags": [
+    "otel",
+    "eregistrations",
+    "payment",
+    "cashier"
+  ],
   "templating": {
     "list": []
   },

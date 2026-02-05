@@ -1,37 +1,72 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
   "links": [
-    { "title": "Error Analysis", "url": "/d/ereg-error-analysis", "type": "link" },
-    { "title": "Latency Analysis", "url": "/d/ereg-latency-analysis", "type": "link" },
-    { "title": "Service Map", "url": "/d/ereg-service-map", "type": "link" }
+    {
+      "title": "Error Analysis",
+      "url": "/d/ereg-error-analysis",
+      "type": "link"
+    },
+    {
+      "title": "Latency Analysis",
+      "url": "/d/ereg-latency-analysis",
+      "type": "link"
+    },
+    {
+      "title": "Service Map",
+      "url": "/d/ereg-service-map",
+      "type": "link"
+    }
   ],
   "panels": [
     {
       "id": 1,
       "title": "Service Health Overview",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "expr": "count(sum by (service_name) (rate(traces_spanmetrics_calls_total[5m])) > 0)",
-          "legendFormat": "Active Services"
+          "legendFormat": "Active Services",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
-      "gridPos": { "h": 3, "w": 6, "x": 0, "y": 0 }
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": 2,
       "title": "Services with Errors",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "expr": "count(sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) > 0)",
-          "legendFormat": "With Errors"
+          "legendFormat": "With Errors",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -39,24 +74,46 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1 },
-              { "color": "red", "value": 3 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 3, "w": 6, "x": 6, "y": 0 }
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      }
     },
     {
       "id": 3,
       "title": "Total Error Rate",
       "type": "gauge",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "expr": "sum(rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total[5m])) * 100",
-          "legendFormat": "Error %"
+          "legendFormat": "Error %",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -66,24 +123,46 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1 },
-              { "color": "red", "value": 5 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 3, "w": 6, "x": 12, "y": 0 }
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      }
     },
     {
       "id": 4,
       "title": "Global p99 Latency",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_latency_bucket[5m])) by (le))",
-          "legendFormat": "p99"
+          "expr": "histogram_quantile(0.99, sum(rate(traces_spanmetrics_duration_milliseconds_bucket[5m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
       "fieldConfig": {
@@ -92,78 +171,177 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1 },
-              { "color": "red", "value": 2 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
             ]
           }
         }
       },
-      "gridPos": { "h": 3, "w": 6, "x": 18, "y": 0 }
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      }
     },
     {
       "id": 5,
       "title": "Top Error Sources",
       "type": "table",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "expr": "topk(5, sum by (service_name, span_name) (increase(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[1h])))",
           "legendFormat": "{{service_name}} - {{span_name}}",
           "instant": true,
-          "format": "table"
+          "format": "table",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 3 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 3
+      }
     },
     {
       "id": 6,
       "title": "Top Latency Contributors",
       "type": "table",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
-          "expr": "topk(5, histogram_quantile(0.99, sum by (le, service_name, span_name) (rate(traces_spanmetrics_latency_bucket[5m]))))",
+          "expr": "topk(5, histogram_quantile(0.99, sum by (le, service_name, span_name) (rate(traces_spanmetrics_duration_milliseconds_bucket[5m]))))",
           "legendFormat": "{{service_name}} - {{span_name}}",
           "instant": true,
-          "format": "table"
+          "format": "table",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ],
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 3 }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 3
+      }
     },
     {
       "id": 7,
       "title": "Service Dependency Map",
       "type": "nodeGraph",
-      "datasource": { "type": "tempo", "uid": "tempo" },
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
       "targets": [
         {
-          "datasource": { "type": "tempo", "uid": "tempo" },
-          "queryType": "serviceMap"
+          "datasource": {
+            "type": "tempo",
+            "uid": "tempo"
+          },
+          "queryType": "serviceMap",
+          "refId": "A"
         }
       ],
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 11 }
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      }
     },
     {
       "id": 8,
-      "title": "Recent Problematic Traces",
-      "type": "table",
-      "datasource": { "type": "tempo", "uid": "tempo" },
+      "title": "Top Error-Producing Operations",
+      "type": "bargauge",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
-          "datasource": { "type": "tempo", "uid": "tempo" },
-          "queryType": "traceqlSearch",
-          "query": "{ status = error || duration > 3s }",
-          "limit": 30
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "topk(20, sum by (service_name, span_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])))",
+          "legendFormat": "{{service_name}} - {{span_name}}",
+          "refId": "A"
         }
       ],
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 21 }
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
+      }
     }
   ],
   "schemaVersion": 39,
-  "tags": ["otel", "eregistrations", "rca", "root-cause"],
-  "templating": { "list": [] },
-  "time": { "from": "now-1h", "to": "now" },
+  "tags": [
+    "otel",
+    "eregistrations",
+    "rca",
+    "root-cause"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "browser",
   "title": "eRegistrations - Root Cause Analysis",
