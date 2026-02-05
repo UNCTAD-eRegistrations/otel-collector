@@ -18,7 +18,7 @@
       },
       "targets": [
         {
-          "expr": "topk(10, sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[1h])) / sum by (service_name) (rate(traces_spanmetrics_calls_total[1h])) * 100)",
+          "expr": "topk(10, (sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[1h])) or vector(0)) / sum by (service_name) (rate(traces_spanmetrics_calls_total[1h])) * 100)",
           "legendFormat": "{{service_name}}",
           "refId": "A",
           "datasource": {
@@ -140,7 +140,7 @@
       },
       "targets": [
         {
-          "expr": "sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum by (service_name) (rate(traces_spanmetrics_calls_total[5m])) * 100",
+          "expr": "(sum by (service_name) (rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) / sum by (service_name) (rate(traces_spanmetrics_calls_total[5m])) * 100",
           "legendFormat": "{{service_name}}",
           "refId": "A",
           "datasource": {

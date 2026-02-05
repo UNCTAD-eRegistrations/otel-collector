@@ -18,7 +18,7 @@
       },
       "targets": [
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\"}[5m]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\"}[5m]))) * 100",
           "legendFormat": "Success Rate",
           "refId": "A",
           "datasource": {
@@ -196,7 +196,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_OK\"}[5m])) * 60",
+          "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_UNSET\"}[5m])) * 60",
           "legendFormat": "Successful/min",
           "refId": "A",
           "datasource": {
@@ -205,7 +205,7 @@
           }
         },
         {
-          "expr": "sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_ERROR\"}[5m])) * 60",
+          "expr": "(sum(rate(traces_spanmetrics_calls_total{service_name=\"cashier\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) * 60",
           "legendFormat": "Failed/min",
           "refId": "B",
           "datasource": {

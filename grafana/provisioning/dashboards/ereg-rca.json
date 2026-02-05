@@ -107,7 +107,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total[5m])) * 100",
+          "expr": "(sum(rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total[5m])) * 100",
           "legendFormat": "Error %",
           "refId": "A",
           "datasource": {
