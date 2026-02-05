@@ -1,8 +1,7 @@
-version: '3.8'
 
 services:
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.95.0
+    image: otel/opentelemetry-collector-contrib:0.144.0
     container_name: otel-collector
     command: ["--config=/etc/otel/config.yaml"]
     volumes:
@@ -28,7 +27,7 @@ services:
 
   # Tempo for trace storage (dev environment)
   tempo:
-    image: grafana/tempo:2.3.1
+    image: grafana/tempo:2.10.0
     container_name: tempo
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
@@ -47,7 +46,7 @@ services:
 
   # Prometheus for metrics storage and querying
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.5.1
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -72,7 +71,7 @@ services:
 
   # Alertmanager for alert routing and notifications
   alertmanager:
-    image: prom/alertmanager:v0.27.0
+    image: prom/alertmanager:v0.31.0
     container_name: alertmanager
     volumes:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
@@ -88,7 +87,7 @@ services:
 
   # Grafana for visualization
   grafana:
-    image: grafana/grafana:10.3.1
+    image: grafana/grafana:12.3.2
     container_name: grafana-otel
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true

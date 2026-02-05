@@ -32,14 +32,14 @@ groups:
       # High Latency Alert
       - alert: HighLatency
         expr: |
-          histogram_quantile(0.99, sum by (le, service_name) (rate(traces_spanmetrics_latency_bucket[5m])))
-          > 5
+          histogram_quantile(0.99, sum by (le, service_name) (rate(traces_spanmetrics_duration_milliseconds_bucket[5m])))
+          > 5000
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "High latency for {{ $labels.service_name }}"
-          description: "P99 latency is {{ $value | humanizeDuration }} (threshold: 5s)"
+          description: "P99 latency is {{ $value | humanize }}ms (threshold: 5000ms)"
 
       # Service Down Alert
       - alert: ServiceDown
@@ -78,14 +78,14 @@ groups:
       # PDF Generation Slow
       - alert: PDFGenerationSlow
         expr: |
-          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="chrome-url-to-pdf"}[5m])))
-          > 60
+          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_duration_milliseconds_bucket{service_name="chrome-url-to-pdf"}[5m])))
+          > 60000
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "PDF generation is slow"
-          description: "P95 PDF generation time is {{ $value | humanizeDuration }} (threshold: 60s)"
+          description: "P95 PDF generation time is {{ $value | humanize }}ms (threshold: 60000ms)"
 
       # Payment Processing Issues
       - alert: PaymentProcessingErrors
@@ -121,9 +121,9 @@ groups:
       # Camunda process engine failure
       - alert: CamundaEngineFailure
         expr: |
-          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot", status_code="STATUS_CODE_ERROR"}[5m]))
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda", status_code="STATUS_CODE_ERROR"}[5m]))
           /
-          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot"}[5m]))
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda"}[5m]))
           > 0.1
         for: 5m
         labels:
@@ -138,29 +138,29 @@ groups:
       # DS-Backend latency SLO breach
       - alert: DSBackendLatencySLOBreach
         expr: |
-          histogram_quantile(0.99, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="ds-backend"}[5m]))) > 2
+          histogram_quantile(0.99, sum by (le) (rate(traces_spanmetrics_duration_milliseconds_bucket{service_name="ds-backend"}[5m]))) > 2000
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "DS-Backend p99 latency exceeds 2s SLO"
-          description: "Current p99: {{ $value | humanizeDuration }}"
+          description: "Current p99: {{ $value | humanize }}ms"
 
       # Form load time alert
       - alert: FormLoadTimeSlow
         expr: |
-          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="formio-server"}[5m]))) > 0.5
+          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_duration_milliseconds_bucket{service_name="formio"}[5m]))) > 500
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "Form load time p95 exceeds 500ms"
-          description: "Current p95: {{ $value | humanizeDuration }}"
+          description: "Current p95: {{ $value | humanize }}ms"
 
       # Payment processing latency
       - alert: PaymentProcessingSlow
         expr: |
-          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_latency_bucket{service_name="cashier"}[5m]))) > 30
+          histogram_quantile(0.95, sum by (le) (rate(traces_spanmetrics_duration_milliseconds_bucket{service_name="cashier"}[5m]))) > 30000
         for: 3m
         labels:
           severity: warning
@@ -173,9 +173,9 @@ groups:
       # BOT role failures
       - alert: BotRoleFailures
         expr: |
-          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot", span_name=~".*bot.*", status_code="STATUS_CODE_ERROR"}[5m]))
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda", span_name=~".*bot.*", status_code="STATUS_CODE_ERROR"}[5m]))
           /
-          sum(rate(traces_spanmetrics_calls_total{service_name="camunda-boot", span_name=~".*bot.*"}[5m]))
+          sum(rate(traces_spanmetrics_calls_total{service_name="camunda", span_name=~".*bot.*"}[5m]))
           > 0.05
         for: 10m
         labels:
@@ -200,9 +200,9 @@ groups:
       # External service timeout pattern
       - alert: ExternalServiceTimeouts
         expr: |
-          sum by (service_name) (rate(traces_spanmetrics_calls_total{service_name="mule", status_code="STATUS_CODE_ERROR"}[5m]))
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{service_name="mule3", status_code="STATUS_CODE_ERROR"}[5m]))
           /
-          sum by (service_name) (rate(traces_spanmetrics_calls_total{service_name="mule"}[5m]))
+          sum by (service_name) (rate(traces_spanmetrics_calls_total{service_name="mule3"}[5m]))
           > 0.1
         for: 5m
         labels:
@@ -213,7 +213,7 @@ groups:
       # Formio submission errors
       - alert: FormioSubmissionErrors
         expr: |
-          sum(rate(traces_spanmetrics_calls_total{service_name="formio-server", status_code="STATUS_CODE_ERROR"}[5m])) > 1
+          sum(rate(traces_spanmetrics_calls_total{service_name="formio", status_code="STATUS_CODE_ERROR"}[5m])) > 1
         for: 5m
         labels:
           severity: warning

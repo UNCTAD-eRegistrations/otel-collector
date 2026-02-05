@@ -1,46 +1,43 @@
 apiVersion: 1
-
 datasources:
-  - name: Tempo
-    type: tempo
-    uid: tempo
-    access: proxy
-    url: http://tempo:3200
-    isDefault: true
-    editable: false
-    jsonData:
-      tracesToLogs:
-        datasourceUid: 'tempo'
-      tracesToMetrics:
-        datasourceUid: 'prometheus'
-        spanStartTimeShift: '-5m'
-        spanEndTimeShift: '5m'
-        tags:
-          - key: 'service.name'
-            value: 'service_name'
-        queries:
-          - name: 'Request Rate'
-            query: 'sum(rate(traces_spanmetrics_calls_total{service_name="${__span.tags[\"service.name\"]}"}[5m]))'
-          - name: 'Error Rate'
-            query: 'sum(rate(traces_spanmetrics_calls_total{service_name="${__span.tags[\"service.name\"]}", status_code="STATUS_CODE_ERROR"}[5m]))'
-      serviceMap:
-        datasourceUid: 'prometheus'
-      nodeGraph:
-        enabled: true
-      search:
-        hide: false
-      traceQuery:
-        timeShiftEnabled: true
-        spanStartTimeShift: '1h'
-        spanEndTimeShift: '1h'
-      spanBar:
-        type: 'None'
-
-  - name: Prometheus
-    type: prometheus
-    uid: prometheus
-    access: proxy
-    url: http://prometheus:9090
-    editable: false
-    jsonData:
-      timeInterval: 5s
+- name: Prometheus
+  type: prometheus
+  uid: prometheus
+  access: proxy
+  url: http://prometheus:9090
+  editable: false
+  jsonData:
+    timeInterval: 5s
+- name: Tempo
+  type: tempo
+  uid: tempo
+  access: proxy
+  url: http://tempo:3200
+  isDefault: true
+  editable: false
+  jsonData:
+    tracesToMetrics:
+      datasourceUid: prometheus
+      spanStartTimeShift: -5m
+      spanEndTimeShift: 5m
+      tags:
+      - key: service.name
+        value: service_name
+      queries:
+      - name: Request Rate
+        query: sum(rate(traces_spanmetrics_calls_total{service_name="${__span.tags[\"service.name\"]}"}[5m]))
+      - name: Error Rate
+        query: sum(rate(traces_spanmetrics_calls_total{service_name="${__span.tags[\"service.name\"]}",
+          status_code="STATUS_CODE_ERROR"}[5m]))
+    serviceMap:
+      datasourceUid: prometheus
+    nodeGraph:
+      enabled: true
+    search:
+      hide: false
+    traceQuery:
+      timeShiftEnabled: true
+      spanStartTimeShift: 1h
+      spanEndTimeShift: 1h
+    spanBar:
+      type: None
