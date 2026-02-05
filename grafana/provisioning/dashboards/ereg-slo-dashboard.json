@@ -18,7 +18,7 @@
       },
       "targets": [
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[24h])) / sum(rate(traces_spanmetrics_calls_total[24h]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[24h])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total[24h]))) * 100",
           "legendFormat": "Overall Availability",
           "refId": "A",
           "datasource": {
@@ -66,7 +66,7 @@
       },
       "targets": [
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\", status_code=\"STATUS_CODE_ERROR\"}[24h])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\"}[24h]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\", status_code=\"STATUS_CODE_ERROR\"}[24h])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\"}[24h]))) * 100",
           "legendFormat": "Availability",
           "refId": "A",
           "datasource": {
@@ -116,7 +116,7 @@
       },
       "targets": [
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\", status_code=\"STATUS_CODE_ERROR\"}[24h])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\"}[24h]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\", status_code=\"STATUS_CODE_ERROR\"}[24h])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\"}[24h]))) * 100",
           "legendFormat": "Availability",
           "refId": "A",
           "datasource": {
@@ -166,7 +166,7 @@
       },
       "targets": [
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda-boot\", status_code=\"STATUS_CODE_ERROR\"}[24h])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda-boot\"}[24h]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda\", status_code=\"STATUS_CODE_ERROR\"}[24h])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda\"}[24h]))) * 100",
           "legendFormat": "Availability",
           "refId": "A",
           "datasource": {
@@ -216,7 +216,7 @@
       },
       "targets": [
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\", status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\"}[5m]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"ds-backend\"}[5m]))) * 100",
           "legendFormat": "DS-Backend",
           "refId": "A",
           "datasource": {
@@ -225,7 +225,7 @@
           }
         },
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\", status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\"}[5m]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"bpa-backend\"}[5m]))) * 100",
           "legendFormat": "BPA-Backend",
           "refId": "B",
           "datasource": {
@@ -234,7 +234,7 @@
           }
         },
         {
-          "expr": "(1 - sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda-boot\", status_code=\"STATUS_CODE_ERROR\"}[5m])) / sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda-boot\"}[5m]))) * 100",
+          "expr": "(1 - (sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)) / sum(rate(traces_spanmetrics_calls_total{service_name=\"camunda\"}[5m]))) * 100",
           "legendFormat": "Camunda",
           "refId": "C",
           "datasource": {
@@ -303,7 +303,7 @@
           }
         },
         {
-          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"camunda-boot\"}[5m])) by (le))",
+          "expr": "histogram_quantile(0.95, sum(rate(traces_spanmetrics_duration_milliseconds_bucket{service_name=\"camunda\"}[5m])) by (le))",
           "legendFormat": "Camunda",
           "refId": "C",
           "datasource": {
