@@ -46,7 +46,22 @@
                 "value": 5
               }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "View error traces in Explore",
+              "internal": {
+                "datasourceUid": "tempo",
+                "datasourceName": "Tempo",
+                "query": {
+                  "refId": "A",
+                  "queryType": "traceql",
+                  "query": "{resource.service.name=\"${__field.labels.service_name}\" && status=error}",
+                  "limit": 20
+                }
+              }
+            }
+          ]
         }
       },
       "gridPos": {
@@ -90,7 +105,22 @@
                 "value": 50
               }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "View error traces in Explore",
+              "internal": {
+                "datasourceUid": "tempo",
+                "datasourceName": "Tempo",
+                "query": {
+                  "refId": "A",
+                  "queryType": "traceql",
+                  "query": "{resource.service.name=\"${__field.labels.service_name}\" && status=error}",
+                  "limit": 20
+                }
+              }
+            }
+          ]
         }
       },
       "gridPos": {
@@ -192,7 +222,22 @@
                 "value": 1
               }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "View error traces for this operation",
+              "internal": {
+                "datasourceUid": "tempo",
+                "datasourceName": "Tempo",
+                "query": {
+                  "refId": "A",
+                  "queryType": "traceql",
+                  "query": "{resource.service.name=\"${__field.labels.service_name}\" && status=error && name=~\"${__field.labels.span_name}\"}",
+                  "limit": 20
+                }
+              }
+            }
+          ]
         }
       },
       "options": {
@@ -244,7 +289,22 @@
                 "value": 2000
               }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "View error traces for this operation",
+              "internal": {
+                "datasourceUid": "tempo",
+                "datasourceName": "Tempo",
+                "query": {
+                  "refId": "A",
+                  "queryType": "traceql",
+                  "query": "{resource.service.name=\"${__field.labels.service_name}\" && status=error && name=~\"${__field.labels.span_name}\"}",
+                  "limit": 20
+                }
+              }
+            }
+          ]
         }
       },
       "options": {
@@ -296,13 +356,65 @@
                 "value": 1
               }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "View error traces for this operation",
+              "internal": {
+                "datasourceUid": "tempo",
+                "datasourceName": "Tempo",
+                "query": {
+                  "refId": "A",
+                  "queryType": "traceql",
+                  "query": "{resource.service.name=\"${__field.labels.service_name}\" && status=error && name=~\"${__field.labels.span_name}\"}",
+                  "limit": 20
+                }
+              }
+            }
+          ]
         }
       },
       "options": {
         "orientation": "horizontal",
         "displayMode": "gradient",
         "showUnfilled": true
+      }
+    },
+    {
+      "id": 7,
+      "title": "Recent Error Traces",
+      "description": "Click a trace ID to view the full span waterfall with exception details",
+      "type": "table",
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "tempo",
+            "uid": "tempo"
+          },
+          "queryType": "traceql",
+          "query": "{status=error}",
+          "limit": 20
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "Start time",
+            "desc": true
+          }
+        ]
       }
     }
   ],
