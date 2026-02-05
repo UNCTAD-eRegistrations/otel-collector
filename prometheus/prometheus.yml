@@ -17,6 +17,16 @@ scrape_configs:
       - targets: ['otel-collector:8889']
     metrics_path: /metrics
 
+  - job_name: 'spanmetrics'
+    static_configs:
+      - targets: ['otel-collector:8890']
+    metrics_path: /metrics
+
+  - job_name: 'servicegraph'
+    static_configs:
+      - targets: ['otel-collector:8891']
+    metrics_path: /metrics
+
   - job_name: 'tempo'
     static_configs:
       - targets: ['tempo:3200']
