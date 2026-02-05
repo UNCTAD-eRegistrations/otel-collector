@@ -1,0 +1,151 @@
+# OTel Service Override Template
+# ==============================
+# Copy this file as docker-compose.otel-override.yml alongside your
+# main eRegistrations docker-compose.yml (NOT in the otel-collector repo).
+#
+# Replace:
+#   - <DEPLOYMENT_ENV> with your environment name (e.g. dev-cuba, production)
+#   - Image tags with appropriate OTel-instrumented image versions
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.otel-override.yml up -d
+
+services:
+  # === Java Services (with Java Agent) ===
+
+  bpa-backend:
+    image: unctad/bpa-backend:<OTEL_IMAGE_TAG>
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=bpa-backend
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  camunda:
+    image: unctad/camunda:<OTEL_IMAGE_TAG>
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=camunda
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  mule:
+    image: unctad/mule3:<OTEL_IMAGE_TAG>
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/opt/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=mule3
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  restheart:
+    image: unctad/restheart:<OTEL_IMAGE_TAG>
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=restheart
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  keycloak:
+    image: unctad/keycloak:<OTEL_IMAGE_TAG>
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/opt/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=keycloak
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  dataweave:
+    image: unctad/dataweave:<OTEL_IMAGE_TAG>
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/opt/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=dataweave
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  cashier:
+    image: unctad/cashier:<OTEL_IMAGE_TAG>
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/opt/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=cashier
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  # === Python Services (with Python SDK) ===
+
+  gdb:
+    image: unctad/gdb:<OTEL_IMAGE_TAG>
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=gdb
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+      - OTEL_PYTHON_LOG_CORRELATION=true
+
+  ereg-cms-frontend:
+    image: unctad/ds-backend:<OTEL_IMAGE_TAG>
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=ds-backend
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+      - OTEL_PYTHON_LOG_CORRELATION=true
+
+  statistics-backend:
+    image: unctad/statistics-backend:<OTEL_IMAGE_TAG>
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=statistics-backend
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+      - OTEL_PYTHON_LOG_CORRELATION=true
+
+  # === Node.js Services (with Node.js SDK) ===
+
+  chrome-url-to-pdf:
+    image: unctad/chrome-url-to-pdf:<OTEL_IMAGE_TAG>
+    environment:
+      - NODE_OPTIONS=--require ./instrumentation.js
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=chrome-url-to-pdf
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  js-assistant:
+    image: unctad/js-assistant:<OTEL_IMAGE_TAG>
+    environment:
+      - NODE_OPTIONS=--require ./instrumentation.js
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=js-assistant
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  websocket:
+    image: unctad/bpa-websocket:<OTEL_IMAGE_TAG>
+    environment:
+      - NODE_OPTIONS=--require ./instrumentation.js
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=websocket
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  clamav:
+    image: unctad/clamav:<OTEL_IMAGE_TAG>
+    environment:
+      - NODE_OPTIONS=--require ./instrumentation.js
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=clamav
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  formio:
+    image: unctad/formio:<OTEL_IMAGE_TAG>
+    environment:
+      - NODE_OPTIONS=--require ./instrumentation.js
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=formio
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
+
+  publisher:
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=publisher
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=<DEPLOYMENT_ENV>,service.namespace=eregistrations
