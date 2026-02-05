@@ -9,12 +9,34 @@ receivers:
           allowed_origins: ["*"]
           allowed_headers: ["*"]
 
+connectors:
+  spanmetrics:
+    namespace: traces_spanmetrics
+    histogram:
+      explicit:
+        buckets: [5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s]
+    dimensions:
+      - name: http.method
+      - name: http.status_code
+      - name: http.route
+      - name: http.target
+      - name: db.system
+      - name: db.operation
+
+  servicegraph:
+    latency_histogram_buckets: [5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s]
+    dimensions:
+      - http.method
+      - http.status_code
+    store:
+      ttl: 2s
+      max_items: 1000
+
 processors:
   batch:
     timeout: 1s
     send_batch_size: 1024
-  
-  # Add resource attributes to all spans
+
   resource:
     attributes:
       - key: environment
@@ -24,7 +46,6 @@ processors:
         value: eregistrations
         action: upsert
 
-  # Filter out noisy health check spans
   filter:
     spans:
       exclude:
@@ -35,18 +56,21 @@ processors:
           - "readiness"
 
 exporters:
-  # Export traces to Tempo
   otlp/tempo:
     endpoint: tempo:4317
     tls:
       insecure: true
-  
-  # Prometheus metrics endpoint
+
   prometheus:
     endpoint: 0.0.0.0:8889
     namespace: otel
-  
-  # Debug logging (for development)
+
+  prometheus/spanmetrics:
+    endpoint: 0.0.0.0:8890
+
+  prometheus/servicegraph:
+    endpoint: 0.0.0.0:8891
+
   debug:
     verbosity: detailed
 
@@ -64,11 +88,19 @@ service:
     traces:
       receivers: [otlp]
       processors: [resource, batch]
-      exporters: [otlp/tempo, debug]
+      exporters: [otlp/tempo, spanmetrics, servicegraph, debug]
     metrics:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus, debug]
+    metrics/spanmetrics:
+      receivers: [spanmetrics]
+      processors: [batch]
+      exporters: [prometheus/spanmetrics]
+    metrics/servicegraph:
+      receivers: [servicegraph]
+      processors: [batch]
+      exporters: [prometheus/servicegraph]
     logs:
       receivers: [otlp]
       processors: [batch]

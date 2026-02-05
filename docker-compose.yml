@@ -13,6 +13,8 @@ services:
       - "8888:8888"   # Prometheus metrics
       - "8889:8889"   # Prometheus exporter
       - "13133:13133" # Health check
+      - "8890:8890"   # Spanmetrics exporter
+      - "8891:8891"   # Servicegraph exporter
     networks:
       - deploy_default
     deploy:
@@ -91,7 +93,7 @@ services:
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_SERVER_ROOT_URL=https://grafana.govbridge.org
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL}
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
