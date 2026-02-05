@@ -50,10 +50,15 @@ processors:
     spans:
       exclude:
         match_type: regexp
-        services:
-          - "health"
-          - "liveness"
-          - "readiness"
+        span_names:
+          - ".*health.*"
+          - ".*liveness.*"
+          - ".*readiness.*"
+          - ".*actuator.*"
+          - ".*/status[/?$]*$"
+          - ".*\\^status.*"
+          - ".*/api/status$"
+          - ".*/api/v1/status$"
 
 exporters:
   otlp/tempo:
@@ -87,7 +92,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [resource, batch]
+      processors: [filter, resource, batch]
       exporters: [otlp/tempo, spanmetrics, servicegraph, debug]
     metrics:
       receivers: [otlp]
